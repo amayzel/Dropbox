@@ -8,6 +8,7 @@ import java.net.UnknownHostException;
 
 public class DropboxClient implements ReaderListener {
 
+	private String Message;
 	private Socket socket;
 	private OutputStream outputStream;
 	private PrintWriter printWriter;
@@ -27,8 +28,7 @@ public class DropboxClient implements ReaderListener {
 	
 	@Override
 	public void onLineRead(String line) {
-		// TODO Auto-generated method stub
-		
+		Message = line;
 	}
 	@Override
 	public void onCloseSocket(Socket socket) {
@@ -36,7 +36,11 @@ public class DropboxClient implements ReaderListener {
 		
 	}
 	
-	
+	public static void main(String [] args) throws UnknownHostException, IOException{
+		DropboxClient dc = new DropboxClient();
+		dc.sendMessage("LIST ");
+		System.out.println(dc.Message);
+	}
 	
 
 }

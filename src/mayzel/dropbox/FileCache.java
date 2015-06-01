@@ -1,4 +1,4 @@
-package mayzel.dropbox;
+/*package mayzel.dropbox;
 import java.io.File;
 import java.io.DataInput;
 import java.io.IOException;
@@ -54,4 +54,4 @@ public class FileCache {
 		}
 		return chunk;
 	}
-}
+}*/

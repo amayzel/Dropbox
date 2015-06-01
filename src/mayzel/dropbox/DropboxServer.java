@@ -1,6 +1,7 @@
 package mayzel.dropbox;
 
 import java.io.IOException;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
@@ -13,16 +14,35 @@ public class DropboxServer implements ReaderListener {
 	private WriterThread writer;
 
 	public DropboxServer() {
+		String sendMessage = null;
+		sockets = new ArrayList<Socket>();
+		writer = new WriterThread(sendMessage, socket);
+		writer.start();
+		
+		try{
+			ServerSocket ss = new ServerSocket(4444);
+			while(true){
+				socket = ss.accept();
+				sockets.add(socket);
+				ReaderThread rt = new ReaderThread(socket, this);
+				rt.start();
+			}
+		}
+		catch(IOException e){
+			e.printStackTrace();
+		}
+		
 		/*messages = new ArrayList<String>();
 			messages.add("LIST");
 			messages.add("UPLOAD");
 			messages.add("DOWNLOAD");*/
-		sockets = new ArrayList<Socket>();
 		String [] inputs = Message.split(" ");
 		switch (inputs[0]) {
 		case "LIST":
 			List list = new List();
-			list.perform();
+			Files files = new Files();
+			sendMessage = "FILES " +  files.getNumberOfFiles();
+			//list.perform();
 			break;
 		case "UPLOAD":
 			String ufilename = inputs[1];
@@ -42,11 +62,11 @@ public class DropboxServer implements ReaderListener {
 			//File file = new File();
 			break;
 		case "FILES:":
-			Files files = new Files();
+			//Files files = new Files();
 			break;
 			
 		}
-		// writer = new WriterThread(messages, socket)
+		
 	}
 
 	@Override
@@ -61,6 +81,11 @@ public class DropboxServer implements ReaderListener {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static void main(String [] args){
+		DropboxServer server = new DropboxServer();
+		System.out.println(server.Message);
 	}
 
 }

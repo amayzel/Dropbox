@@ -11,6 +11,7 @@ public class ReaderThread extends Thread{
 	
 	private Socket socket;
 	private ReaderListener listener;
+	private String line;
 	
 	public ReaderThread(Socket socket, ReaderListener listener) {	
 		this.socket = socket;
@@ -22,7 +23,6 @@ public class ReaderThread extends Thread{
 			InputStream is = socket.getInputStream();
 			BufferedReader reader  = new BufferedReader(new InputStreamReader(is));
 			
-			String line;
 			while((line = reader.readLine()) != null){
 				listener.onLineRead(line);
 			}
@@ -32,6 +32,10 @@ public class ReaderThread extends Thread{
 		}
 		
 		listener.onCloseSocket(socket);
+	}
+	
+	public String getLine(){
+		return line;
 	}
 
 }
