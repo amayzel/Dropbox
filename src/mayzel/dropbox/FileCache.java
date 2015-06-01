@@ -1,7 +1,6 @@
 package mayzel.dropbox;
-
-import java.io.DataInput;
 import java.io.File;
+import java.io.DataInput;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
@@ -19,9 +18,7 @@ public class FileCache {
 		// returns a list of files names
 		ArrayList<File> returningFiles = new ArrayList<File>();
 		for(int i=0;i<allFiles.size();i++){
-			if(allFiles.get(i).getFilename() == username){
 				returningFiles.add(allFiles.get(i));
-			}
 		}
 		return returningFiles;
 	}
@@ -30,7 +27,7 @@ public class FileCache {
 
 	}
 
-	public Chunk getChunk(String username, String filename, int start, int length) {
+	public Chunk getChunk(String filename, int start, int length) {
 		// is the actual bytes you need
 		Chunk chunk = null;
 		File file;
@@ -41,7 +38,7 @@ public class FileCache {
 					break;
 				}
 				else{
-					file = new File(ROOT + "/username/filename", "rw");
+					file = new File(ROOT + "/filename", "rw");
 				}
 			}
 			byte b[] = null;

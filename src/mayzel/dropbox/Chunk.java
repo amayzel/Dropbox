@@ -1,15 +1,17 @@
 package mayzel.dropbox;
 
-public class Chunk {
+public class Chunk  implements Messages{
 
 	private String fileName;
+	private int lastModified;
 	private byte bytes[];
-	private int start;
+	private int offset;
+	private byte filesize;
 	
-	public Chunk(String fileName, byte bytes[], int start) {
+	public Chunk(String fileName, int lastModified, byte fileSize, int offset,  byte bytes[]) {
 		this.fileName = fileName;
 		this.bytes = bytes;;
-		this.start = start;
+		this.offset = offset;
 	}
 
 	public String getFileName() {
@@ -28,13 +30,37 @@ public class Chunk {
 		this.bytes = bytes;
 	}
 
-	public int getStart() {
-		return start;
+	public int getLastModified() {
+		return lastModified;
 	}
 
-	public void setStart(int start) {
-		this.start = start;
+	public void setLastModified(int lastModified) {
+		this.lastModified = lastModified;
 	}
+
+	public int getOffset() {
+		return offset;
+	}
+
+	public void setOffset(int offset) {
+		this.offset = offset;
+	}
+
+	public byte getFilesize() {
+		return filesize;
+	}
+
+	public void setFilesize(byte filesize) {
+		this.filesize = filesize;
+	}
+
+	@Override
+	public void perform() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
 	
 	
 

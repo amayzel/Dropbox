@@ -1,22 +1,25 @@
 package mayzel.dropbox;
 
-public class File {
+public class File implements Messages{
 	
-	private String username;
+	
 	private String filename;
+	private int lastModified;
+	private byte fileSize;
 
-	public File(String username, String filename) {
-		this.username = username;
+	public File(String filename, int lastModified, byte fileSize) {
 		this.filename = filename;
 	}
 
-	public String getUsername() {
-		return username;
+	
+	public void setLastModified(int lastModified) {
+		this.lastModified = lastModified;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
+	public int getLastModified() {
+		return lastModified;
 	}
+
 
 	public String getFilename() {
 		return filename;
@@ -24,6 +27,13 @@ public class File {
 
 	public void setFilename(String filename) {
 		this.filename = filename;
+	}
+
+
+	@Override
+	public void perform() {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	
