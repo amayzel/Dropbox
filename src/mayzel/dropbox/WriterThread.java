@@ -4,28 +4,38 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class WriterThread extends Thread {
 
 	private String Message;
-	private Socket socket;
+	private ArrayList<Socket> sockets;
 
-	public WriterThread(String message, Socket socket) {
+	private PrintWriter pw;
+
+	public WriterThread(String message, ArrayList<Socket> sockets) {
 		this.Message = message;
-		this.socket = socket;
+		this.sockets = sockets;
 	}
 
 	public void run() {
-		while (true) {
+		Iterator<Socket> iter = sockets.iterator();
+		while(iter.hasNext()){
+			Socket s = iter.next();
 			try{
-			OutputStream os = socket.getOutputStream();
-			PrintWriter pw = new PrintWriter(os);
-			pw.println(Message);
-			pw.flush();
+				pw = new PrintWriter(s.getOutputStream());
+				pw.println(Message);
+				pw.flush();
 			}
 			catch(IOException e){
+				iter.remove();
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public PrintWriter getPrintWriter() {
+		return pw;
 	}
 }

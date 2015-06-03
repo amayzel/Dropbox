@@ -29,6 +29,7 @@ public class DropboxClient implements ReaderListener {
 	@Override
 	public void onLineRead(String line) {
 		Message = line;
+		System.out.println(Message);
 	}
 	@Override
 	public void onCloseSocket(Socket socket) {
@@ -38,8 +39,7 @@ public class DropboxClient implements ReaderListener {
 	
 	public static void main(String [] args) throws UnknownHostException, IOException{
 		DropboxClient dc = new DropboxClient();
-		dc.sendMessage("LIST ");
-		System.out.println(dc.Message);
+		dc.sendMessage("LIST");	
 	}
 	
 
