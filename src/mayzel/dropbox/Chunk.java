@@ -1,17 +1,24 @@
 package mayzel.dropbox;
 
-public class Chunk  implements Messages{
+import java.util.concurrent.LinkedBlockingQueue;
+
+public class Chunk implements Messages {
 
 	private String fileName;
-	private int lastModified;
-	private byte bytes[];
+	private long lastModified;
+	private String encoded;
 	private int offset;
 	private byte filesize;
-	
-	public Chunk(String fileName, int lastModified, byte fileSize, int offset,  byte bytes[]) {
+	private FileCache fileCache;
+
+	public Chunk(String fileName, long lastModified, byte fileSize, int offset, String encoded) {
 		this.fileName = fileName;
-		this.bytes = bytes;;
+		this.encoded = encoded;
 		this.offset = offset;
+	}
+
+	public Chunk(FileCache fileCache) {
+		this.fileCache = fileCache;
 	}
 
 	public String getFileName() {
@@ -22,15 +29,15 @@ public class Chunk  implements Messages{
 		this.fileName = fileName;
 	}
 
-	public byte[] getBytes() {
-		return bytes;
+	public String getEncoded() {
+		return encoded;
 	}
 
-	public void setBytes(byte[] bytes) {
-		this.bytes = bytes;
+	public void setEncoded(String encoded) {
+		this.encoded = encoded;
 	}
 
-	public int getLastModified() {
+	public long getLastModified() {
 		return lastModified;
 	}
 
@@ -55,13 +62,10 @@ public class Chunk  implements Messages{
 	}
 
 	@Override
-	public void perform() {
-		// TODO Auto-generated method stub
-		
+	public void perform(LinkedBlockingQueue<String> queue) {
+		String msg = "CHUNK " + fileName + " " + lastModified + " " + offset + " " + encoded;
+		queue.add(msg);
+		fileCache.addChunk();
 	}
-
-	
-	
-	
 
 }

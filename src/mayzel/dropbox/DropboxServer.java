@@ -4,52 +4,46 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class DropboxServer implements ReaderListener {
 
-	private String Message;
+	private LinkedBlockingQueue<String> Message;
 	private Socket socket;
 	private ArrayList<Socket> sockets;
-	private ArrayList<String> messages;
 	private WriterThread writer;
+	private FileCache fileCache;
 
 	public DropboxServer() {
-		String sendMessage = "HI";
+		Message = new LinkedBlockingQueue<String>();
 		sockets = new ArrayList<Socket>();
-		
-		writer = new WriterThread(sendMessage, sockets);
+		fileCache = new FileCache();
+
+		writer = new WriterThread(Message, sockets);
 		writer.start();
-		
-		try{
+
+		try {
 			ServerSocket ss = new ServerSocket(4444);
-			while(true){
+			while (true) {
 				socket = ss.accept();
 				sockets.add(socket);
 				ReaderThread rt = new ReaderThread(socket, this);
 				rt.start();
 			}
-		}
-		catch(IOException e){
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		
-		/*messages = new ArrayList<String>();
-			messages.add("LIST");
-			messages.add("UPLOAD");
-			messages.add("DOWNLOAD");*/
-		
-		
+
 	}
 
 	@Override
 	public void onLineRead(String line) {
-		Message = line;
-		String [] inputs = Message.split(" ");
+		String message = line;
+		String[] inputs = message.split(" ");
 		switch (inputs[0]) {
 		case "LIST":
-			List list = new List(writer.getPrintWriter());
-			list.perform();
+			List list = new List(fileCache);
+			list.perform(Message);
 			System.out.println("Goes Through!");
 			break;
 		case "DOWNLOAD":
@@ -57,12 +51,14 @@ public class DropboxServer implements ReaderListener {
 			byte doffset = Byte.valueOf(inputs[2]);
 			byte dchunksize = Byte.valueOf(inputs[3]);
 			Download download = new Download(dfilename, doffset, dchunksize);
-			download.perform();
+			download.perform(Message);
 			break;
 		case "CHUNK":
+			Chunk chunk = new Chunk(inputs[1], Long.valueOf(inputs[2]), Byte.valueOf(inputs[3]),
+					Integer.valueOf(inputs[4]), null);
+			chunk.perform(Message);
 			break;
 		}
-		System.out.println("Server's on line reader");
 	}
 
 	@Override
@@ -73,10 +69,9 @@ public class DropboxServer implements ReaderListener {
 			e.printStackTrace();
 		}
 	}
-	
-	public static void main(String [] args){
+
+	public static void main(String[] args) {
 		DropboxServer server = new DropboxServer();
-		System.out.println(server.Message);
 	}
 
 }

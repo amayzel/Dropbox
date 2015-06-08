@@ -1,22 +1,24 @@
 package mayzel.dropbox;
 
-import java.io.PrintWriter;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class List implements Messages {
-	
-	private PrintWriter pw;
-	public List(PrintWriter pw) {
-		this.pw = pw;
+
+	private FileCache fileCache;
+
+	public List(FileCache fileCache) {
+		this.fileCache = fileCache;
 	}
 
 	@Override
-	public void perform() {
-		//return numebr of files
-		//lists all file names last modified and file size
-		Files files = new Files();
-		String sendMessage = "FILES " +  files.getNumberOfFiles();
-		pw.println(sendMessage);
-		pw.flush();
+	public void perform(LinkedBlockingQueue<String> queue) {
+		// return numebr of files
+		// lists all file names last modified and file size
+
+		Files files = new Files(fileCache);
+		files.perform(queue);
+		File file = new File(fileCache);
+		file.perform(queue);
 	}
 
 }

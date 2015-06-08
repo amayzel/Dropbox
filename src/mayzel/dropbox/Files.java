@@ -1,29 +1,19 @@
 package mayzel.dropbox;
 
-public class Files implements Messages{
+import java.util.concurrent.LinkedBlockingQueue;
 
-	private int numberOfFiles;
-	public Files() {
-		this.numberOfFiles = 0;
+public class Files implements Messages {
+
+	private FileCache fileCache;
+
+	public Files(FileCache fileCache) {
+		this.fileCache = fileCache;
 	}
-	
-	
-
-	public int getNumberOfFiles() {
-		return numberOfFiles;
-	}
-
-
-
-	public void setNumberOfFiles(int numberOfFiles) {
-		this.numberOfFiles = numberOfFiles;
-	}
-
-
 
 	@Override
-	public void perform() {
-		
+	public void perform(LinkedBlockingQueue<String> queue) {
+		String sendMessage = "FILES " + fileCache.getNumFiles();
+		queue.add(sendMessage);
 	}
 
 }
