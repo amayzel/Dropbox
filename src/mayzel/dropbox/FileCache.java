@@ -8,7 +8,6 @@ public class FileCache {
 
 	private static final String ROOT = "dropbox/";
 	private ArrayList<File> allFiles = new ArrayList<File>();
-	private File folder;
 
 	public FileCache() {
 		new File(ROOT).mkdir();
@@ -23,16 +22,10 @@ public class FileCache {
 		return returningFiles;
 	}
 
-	public void addChunk() {
-		folder = new File("./dropbox/");
-		File[] listOfFiles = folder.listFiles();
-		for (int i = 0; i < listOfFiles.length; i++) {
-			File f1 = listOfFiles[i];
-			for (int j = 0; j < allFiles.size(); j++) {
-				File f2 = allFiles.get(j);
-				if (!(f1.getName().equals(f2.getName()) && f1.lastModified() == f2.lastModified())) {
-					allFiles.add(f1);
-				}
+	public void addChunk(String fileName) {
+		for (File f : allFiles) {
+			if (!(f.getName().equals(fileName))) {
+				allFiles.add(new File(ROOT + "/" + fileName));
 			}
 		}
 	}

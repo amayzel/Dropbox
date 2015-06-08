@@ -44,19 +44,20 @@ public class DropboxServer implements ReaderListener {
 		case "LIST":
 			List list = new List(fileCache);
 			list.perform(Message);
-			System.out.println("Goes Through!");
 			break;
 		case "DOWNLOAD":
 			String dfilename = inputs[1];
-			byte doffset = Byte.valueOf(inputs[2]);
-			byte dchunksize = Byte.valueOf(inputs[3]);
-			Download download = new Download(dfilename, doffset, dchunksize);
+			Download download = new Download(dfilename, fileCache);
 			download.perform(Message);
 			break;
 		case "CHUNK":
+			System.out.println("Upload " + message);
 			Chunk chunk = new Chunk(inputs[1], Long.valueOf(inputs[2]), Byte.valueOf(inputs[3]),
-					Integer.valueOf(inputs[4]), null);
+					Integer.valueOf(inputs[4]), null, fileCache);
 			chunk.perform(Message);
+			Sync sync = new Sync(inputs[1], Long.valueOf(inputs[2]), Byte.valueOf(inputs[3]), fileCache);
+			Message.add("SYNC " + inputs[1] + " " + inputs[2] + " " + inputs[3]);
+			sync.perform(Message);
 			break;
 		}
 	}

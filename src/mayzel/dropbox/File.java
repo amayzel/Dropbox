@@ -9,8 +9,11 @@ public class File implements Messages {
 	private byte fileSize;
 	private FileCache fileCache;
 
-	public File(String filename, long lastModified, byte fileSize) {
+	public File(String filename, long lastModified, byte fileSize, FileCache fileCache) {
 		this.filename = filename;
+		this.lastModified = lastModified;
+		this.fileSize = fileSize;
+		this.fileCache = fileCache;
 	}
 
 	public File(FileCache fileCache) {
@@ -36,7 +39,8 @@ public class File implements Messages {
 	@Override
 	public void perform(LinkedBlockingQueue<String> queue) {
 		for (int i = 0; i < fileCache.getNumFiles(); i++) {
-			String msg = "FILE " + fileCache.getFiles().get(i).getName();
+			java.io.File file = fileCache.getFiles().get(i);
+			String msg = "FILE " + file.getName() + " " + file.lastModified() + " " + file.length();
 			queue.add(msg);
 		}
 	}

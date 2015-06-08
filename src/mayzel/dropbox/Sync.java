@@ -6,12 +6,14 @@ public class Sync implements Messages {
 
 	private String filename;
 	private byte filesize;
-	private int lastModified;
+	private long lastModified;
+	private FileCache fileCache;
 
-	public Sync(String filename, byte filesize, int lastModified) {
+	public Sync(String filename, long lastModified, byte filesize, FileCache fileCache) {
 		this.filename = filename;
 		this.filesize = filesize;
 		this.lastModified = lastModified;
+		this.fileCache = fileCache;
 	}
 
 	public String getFilename() {
@@ -30,7 +32,7 @@ public class Sync implements Messages {
 		this.filesize = filesize;
 	}
 
-	public int getLastModified() {
+	public long getLastModified() {
 		return lastModified;
 	}
 
@@ -40,8 +42,8 @@ public class Sync implements Messages {
 
 	@Override
 	public void perform(LinkedBlockingQueue<String> queue) {
-		// TODO Auto-generated method stub
-
+		File file = new File(filename, lastModified, filesize, fileCache);
+		file.perform(queue);
 	}
 
 }
