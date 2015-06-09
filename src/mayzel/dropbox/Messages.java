@@ -2,8 +2,14 @@ package mayzel.dropbox;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
-public interface Messages {
+public abstract class Messages {
 
-	abstract void perform(LinkedBlockingQueue<String> queue);
+	String line;
+
+	public boolean matches(String msg) {
+		return line.matches(msg);
+	}
+
+	abstract void perform(LinkedBlockingQueue<String> queue, String[] input);
 
 }

@@ -1,19 +1,16 @@
 package mayzel.dropbox;
 
-import java.util.concurrent.LinkedBlockingQueue;
 
-public class Sync implements Messages {
+public class Sync {
 
 	private String filename;
 	private byte filesize;
 	private long lastModified;
-	private FileCache fileCache;
 
-	public Sync(String filename, long lastModified, byte filesize, FileCache fileCache) {
+	public Sync(String filename, long lastModified, byte filesize) {
 		this.filename = filename;
 		this.filesize = filesize;
 		this.lastModified = lastModified;
-		this.fileCache = fileCache;
 	}
 
 	public String getFilename() {
@@ -39,11 +36,4 @@ public class Sync implements Messages {
 	public void setLastModified(int lastModified) {
 		this.lastModified = lastModified;
 	}
-
-	@Override
-	public void perform(LinkedBlockingQueue<String> queue) {
-		File file = new File(filename, lastModified, filesize, fileCache);
-		file.perform(queue);
-	}
-
 }

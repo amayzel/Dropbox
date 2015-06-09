@@ -1,25 +1,18 @@
 package mayzel.dropbox;
 
-import java.util.concurrent.LinkedBlockingQueue;
 
-public class Chunk implements Messages {
+public class Chunk {
 
 	private String fileName;
 	private long lastModified;
 	private String encoded;
 	private int offset;
 	private byte filesize;
-	private FileCache fileCache;
 
-	public Chunk(String fileName, long lastModified, byte fileSize, int offset, String encoded, FileCache fileCache) {
+	public Chunk(String fileName, long lastModified, byte fileSize, int offset, String encoded) {
 		this.fileName = fileName;
 		this.encoded = encoded;
 		this.offset = offset;
-		this.fileCache = fileCache;
-	}
-
-	public Chunk(FileCache fileCache) {
-		this.fileCache = fileCache;
 	}
 
 	public String getFileName() {
@@ -60,14 +53,6 @@ public class Chunk implements Messages {
 
 	public void setFilesize(byte filesize) {
 		this.filesize = filesize;
-	}
-
-	@Override
-	public void perform(LinkedBlockingQueue<String> queue) {
-		String msg = "CHUNK " + fileName + " " + lastModified + " " + offset + " " + encoded;
-		queue.add(msg);
-		fileCache.addChunk(fileName);
-
 	}
 
 }

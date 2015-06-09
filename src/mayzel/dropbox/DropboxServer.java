@@ -8,18 +8,25 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class DropboxServer implements ReaderListener {
 
-	private LinkedBlockingQueue<String> Message;
+	private LinkedBlockingQueue<String> queue;
 	private Socket socket;
 	private ArrayList<Socket> sockets;
 	private WriterThread writer;
 	private FileCache fileCache;
+	private ArrayList<Messages> messages;
 
 	public DropboxServer() {
-		Message = new LinkedBlockingQueue<String>();
+		queue = new LinkedBlockingQueue<String>();
 		sockets = new ArrayList<Socket>();
 		fileCache = new FileCache();
+		messages = new ArrayList<Messages>();
+		messages.add(new ChunkMessage(fileCache));
+		messages.add(new DownloadMessage(fileCache));
+		messages.add(new FileMessage(fileCache));
+		messages.add(new SyncMessage(fileCache));
+		messages.add(new ListMessage(fileCache));
 
-		writer = new WriterThread(Message, sockets);
+		writer = new WriterThread(queue, sockets);
 		writer.start();
 
 		try {
@@ -40,26 +47,14 @@ public class DropboxServer implements ReaderListener {
 	public void onLineRead(String line) {
 		String message = line;
 		String[] inputs = message.split(" ");
-		switch (inputs[0]) {
-		case "LIST":
-			List list = new List(fileCache);
-			list.perform(Message);
-			break;
-		case "DOWNLOAD":
-			String dfilename = inputs[1];
-			Download download = new Download(dfilename, fileCache);
-			download.perform(Message);
-			break;
-		case "CHUNK":
-			System.out.println("Upload " + message);
-			Chunk chunk = new Chunk(inputs[1], Long.valueOf(inputs[2]), Byte.valueOf(inputs[3]),
-					Integer.valueOf(inputs[4]), null, fileCache);
-			chunk.perform(Message);
-			Sync sync = new Sync(inputs[1], Long.valueOf(inputs[2]), Byte.valueOf(inputs[3]), fileCache);
-			Message.add("SYNC " + inputs[1] + " " + inputs[2] + " " + inputs[3]);
-			sync.perform(Message);
-			break;
+		Messages m = null;
+		for (Messages msg : messages) {
+			if (msg.matches(message)) {
+				m = msg;
+				break;
+			}
 		}
+		m.perform(queue, inputs);
 	}
 
 	@Override
