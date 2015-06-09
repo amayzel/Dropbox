@@ -2,6 +2,8 @@ package mayzel.dropbox;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
+import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
+
 public class ChunkMessage extends Messages {
 
 	private FileCache fileCache;
@@ -14,9 +16,14 @@ public class ChunkMessage extends Messages {
 	@Override
 	void perform(LinkedBlockingQueue<String> queue, String[] input) {
 		String fileName = input[1];
-		String msg = "CHUNK " + fileName + " " + input[2] + " " + input[3] + " " + input[4];
-		queue.add(msg);
-		fileCache.addChunk(fileName);
+		try {
+			fileCache.addChunk(new Chunk(fileName, input[5], Integer.valueOf(input[4])));
+			System.out.println("Chunk");
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		} catch (Base64DecodingException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

@@ -32,7 +32,7 @@ public class DownloadMessage extends Messages {
 			}
 		}
 		int offset = 0;
-		byte[] data = new byte[512];
+		byte[] data = new byte[(int) file.length()];
 		RandomAccessFile rf;
 		try {
 			rf = new RandomAccessFile(file, "rw");
@@ -40,11 +40,14 @@ public class DownloadMessage extends Messages {
 				rf.seek(offset);
 				rf.read(data);
 				String encoded = Base64.encode(data);
-				Chunk chunk = new Chunk(filename, file.lastModified(), (byte) file.length(), offset, encoded);
+				Chunk chunk = new Chunk(filename, encoded, offset);
 				String msg = "CHUNK " + filename + " " + file.lastModified() + " " + file.length() + " " + offset + " "
 						+ encoded;
+				ChunkMessage chunkMsg = new ChunkMessage(fileCache);
+				input = msg.split(" ");
+				queue.add(msg);
+				chunkMsg.perform(queue, input);
 				System.out.println("Download " + msg);
-				// chunk.perform(queue);
 				offset += 512;
 			}
 		} catch (FileNotFoundException e) {

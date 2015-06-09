@@ -15,5 +15,12 @@ public class Files extends Messages {
 	public void perform(LinkedBlockingQueue<String> queue, String[] input) {
 		String sendMessage = "FILES " + fileCache.getNumFiles();
 		queue.add(sendMessage);
+		System.out.println(sendMessage);
+		for (int i = 0; i < fileCache.getNumFiles(); i++) {
+			java.io.File file = fileCache.getFiles().get(i);
+			String msg = "FILE " + file.getName() + " " + file.lastModified() + " " + file.length();
+			queue.add(msg);
+			System.out.println(msg);
+		}
 	}
 }
