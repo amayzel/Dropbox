@@ -18,7 +18,7 @@ public class DropboxClient implements ReaderListener {
 	private ArrayList<Messages> messages;
 
 	public DropboxClient() throws UnknownHostException, IOException {
-		this.socket = new Socket("localhost", 4444);
+		this.socket = new Socket("localhost", 8181);
 		this.outputStream = socket.getOutputStream();
 		this.printWriter = new PrintWriter(outputStream);
 		fileCache = new FileCache();

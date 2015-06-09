@@ -24,7 +24,8 @@ public class DownloadMessage extends Messages {
 		List<File> files = fileCache.getFiles();
 		File file = null;
 		for (File f : files) {
-			if (f.getName().equals(filename)) {
+			String fName = "dropbox\\" + f.getName();
+			if (fName.equals(filename)) {
 				file = f;
 				break;
 			} else {

@@ -18,7 +18,7 @@ public class Files extends Messages {
 		System.out.println(sendMessage);
 		for (int i = 0; i < fileCache.getNumFiles(); i++) {
 			java.io.File file = fileCache.getFiles().get(i);
-			String msg = "FILE " + file.getName() + " " + file.lastModified() + " " + file.length();
+			String msg = "FILE dropbox\\" + file.getName() + " " + file.lastModified() + " " + file.length();
 			queue.add(msg);
 			System.out.println(msg);
 		}

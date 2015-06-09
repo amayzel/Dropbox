@@ -13,6 +13,7 @@ public class SyncMessage extends Messages {
 
 	@Override
 	void perform(LinkedBlockingQueue<String> queue, String[] input) {
+		System.out.println("sync");
 		FileMessage file = new FileMessage(fileCache);
 		input[0] = "FILE";
 		file.perform(queue, input);

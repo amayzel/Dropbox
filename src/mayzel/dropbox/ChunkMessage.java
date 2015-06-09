@@ -18,7 +18,6 @@ public class ChunkMessage extends Messages {
 		String fileName = input[1];
 		try {
 			fileCache.addChunk(new Chunk(fileName, input[5], Integer.valueOf(input[4])));
-			System.out.println("Chunk");
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
 		} catch (Base64DecodingException e) {

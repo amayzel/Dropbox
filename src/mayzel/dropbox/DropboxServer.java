@@ -30,7 +30,7 @@ public class DropboxServer implements ReaderListener {
 		writer.start();
 
 		try {
-			ServerSocket ss = new ServerSocket(4444);
+			ServerSocket ss = new ServerSocket(8181);
 			while (true) {
 				socket = ss.accept();
 				sockets.add(socket);
@@ -49,12 +49,19 @@ public class DropboxServer implements ReaderListener {
 		String[] inputs = message.split(" ");
 		Messages m = null;
 		for (Messages msg : messages) {
-			if (msg.matches(message)) {
+			if (msg.matches(inputs[0])) {
 				m = msg;
 				break;
 			}
 		}
-		m.perform(queue, inputs);
+		if (m != null) {
+			m.perform(queue, inputs);
+			if (inputs[0].equals("CHUNK")) {
+				SyncMessage sync = new SyncMessage(fileCache);
+				String[] array = { "SYNC", inputs[1], inputs[2], inputs[3] };
+				sync.perform(queue, array);
+			}
+		}
 	}
 
 	@Override

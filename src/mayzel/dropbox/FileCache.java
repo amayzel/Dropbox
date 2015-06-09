@@ -33,13 +33,13 @@ public class FileCache {
 		File file = null;
 		boolean found = false;
 		for (File f : files) {
-			if (!(f.getName().equals(chunk.getFileName()))) {
-				file = f;
-			} else {
+			if ((f.getName().equals(chunk.getFileName()))) {
 				found = true;
+				break;
 			}
 		}
 		if (!found) {
+			file = new File(chunk.getFileName());
 			byte[] data = chunk.decode();
 			RandomAccessFile rf;
 			try {
@@ -56,14 +56,14 @@ public class FileCache {
 
 	}
 
-	public Chunk getChunk(String filename, int start, int length) {
+	public Chunk getChunk(File file, int start, int length) {
 		// is the actual bytes you need
 		Chunk chunk = null;
-		byte[] data = null;
-		File f = new File(filename);
+
+		byte[] data = new byte[length];
 		RandomAccessFile rf;
 		try {
-			rf = new RandomAccessFile(f, "rw");
+			rf = new RandomAccessFile(file, "rw");
 			rf.seek(start);
 			rf.read(data, start, length);
 			rf.close();
@@ -73,7 +73,7 @@ public class FileCache {
 			e.printStackTrace();
 		}
 		String encoded = Base64.encode(data);
-		chunk = new Chunk(filename, encoded, start);
+		chunk = new Chunk(file.getName(), encoded, start);
 		return chunk;
 	}
 
