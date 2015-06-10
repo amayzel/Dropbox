@@ -11,9 +11,11 @@ public class SyncMessage extends Messages {
 	@Override
 	void perform(LinkedBlockingQueue<String> queue, String[] input, FileCache fileCache) {
 		System.out.println("sync");
-		FileMessage file = new FileMessage();
-		input[0] = "FILE";
-		file.perform(queue, input, fileCache);
+		//FileMessage file = new FileMessage();
+		//input[0] = "FILE";
+		//file.perform(queue, input, fileCache);
+		DownloadMessage download = new DownloadMessage();
+		download.perform(queue, input, fileCache);
 	}
 
 }

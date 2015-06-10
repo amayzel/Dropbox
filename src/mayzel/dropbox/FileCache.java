@@ -85,4 +85,8 @@ public class FileCache {
 	public String getRoot() {
 		return ROOT;
 	}
+	
+	public void setRoot(String root){
+		ROOT = root;
+	}
 }
