@@ -18,13 +18,13 @@ public class DropboxServer implements ReaderListener {
 	public DropboxServer() {
 		queue = new LinkedBlockingQueue<String>();
 		sockets = new ArrayList<Socket>();
-		fileCache = new FileCache();
+		fileCache = new FileCache("ServerDropbox/");
 		messages = new ArrayList<Messages>();
-		messages.add(new ChunkMessage(fileCache));
-		messages.add(new DownloadMessage(fileCache));
-		messages.add(new FileMessage(fileCache));
-		messages.add(new SyncMessage(fileCache));
-		messages.add(new ListMessage(fileCache));
+		messages.add(new ChunkMessage());
+		messages.add(new DownloadMessage());
+		messages.add(new FileMessage());
+		messages.add(new SyncMessage());
+		messages.add(new ListMessage());
 
 		writer = new WriterThread(queue, sockets);
 		writer.start();
@@ -55,11 +55,11 @@ public class DropboxServer implements ReaderListener {
 			}
 		}
 		if (m != null) {
-			m.perform(queue, inputs);
+			m.perform(queue, inputs, fileCache);
 			if (inputs[0].equals("CHUNK")) {
-				SyncMessage sync = new SyncMessage(fileCache);
+				SyncMessage sync = new SyncMessage();
 				String[] array = { "SYNC", inputs[1], inputs[2], inputs[3] };
-				sync.perform(queue, array);
+				sync.perform(queue, array, fileCache);
 			}
 		}
 	}

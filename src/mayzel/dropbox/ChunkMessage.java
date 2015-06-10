@@ -6,16 +6,13 @@ import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingExcepti
 
 public class ChunkMessage extends Messages {
 
-	private FileCache fileCache;
-
-	public ChunkMessage(FileCache fileCache) {
-		this.fileCache = fileCache;
+	public ChunkMessage() {
 		line = "CHUNK";
 	}
 
 	@Override
-	void perform(LinkedBlockingQueue<String> queue, String[] input) {
-		String fileName = input[1];
+	void perform(LinkedBlockingQueue<String> queue, String[] input, FileCache fileCache) {
+		String fileName = "./ServerDropbox/" + input[1];
 		try {
 			fileCache.addChunk(new Chunk(fileName, input[5], Integer.valueOf(input[4])));
 		} catch (NumberFormatException e) {

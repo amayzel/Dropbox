@@ -10,6 +10,6 @@ public abstract class Messages {
 		return line.matches(msg);
 	}
 
-	abstract void perform(LinkedBlockingQueue<String> queue, String[] input);
+	abstract void perform(LinkedBlockingQueue<String> queue, String[] input, FileCache fileCache);
 
 }

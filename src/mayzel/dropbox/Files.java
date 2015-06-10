@@ -1,26 +1,25 @@
 package mayzel.dropbox;
 
+import java.io.File;
+import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class Files extends Messages {
 
-	private FileCache fileCache;
-
-	public Files(FileCache fileCache) {
-		this.fileCache = fileCache;
+	public Files() {
 		line = "FILES";
 	}
 
 	@Override
-	public void perform(LinkedBlockingQueue<String> queue, String[] input) {
-		String sendMessage = "FILES " + fileCache.getNumFiles();
-		queue.add(sendMessage);
-		System.out.println(sendMessage);
-		for (int i = 0; i < fileCache.getNumFiles(); i++) {
-			java.io.File file = fileCache.getFiles().get(i);
-			String msg = "FILE dropbox\\" + file.getName() + " " + file.lastModified() + " " + file.length();
-			queue.add(msg);
-			System.out.println(msg);
+	public void perform(LinkedBlockingQueue<String> queue, String[] input, FileCache fileCache) {
+		List<File> files = fileCache.getFiles();
+		for (File f : files) {
+			Chunk c = fileCache.getChunk(f, 0, (int) f.length());
+			ChunkMessage chunkMsg = new ChunkMessage();
+			System.out.println("upload " + f.getName());
+			String[] array = { "CHUNK", c.getFileName(), String.valueOf(f.lastModified()), String.valueOf(f.length()),
+					String.valueOf(c.getOffset()), c.getEncoded() };
+			chunkMsg.perform(queue, array, fileCache);
 		}
 	}
 }

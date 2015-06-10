@@ -4,19 +4,16 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class SyncMessage extends Messages {
 
-	private FileCache fileCache;
-
-	public SyncMessage(FileCache fileCache) {
-		this.fileCache = fileCache;
+	public SyncMessage() {
 		line = "SYNC";
 	}
 
 	@Override
-	void perform(LinkedBlockingQueue<String> queue, String[] input) {
+	void perform(LinkedBlockingQueue<String> queue, String[] input, FileCache fileCache) {
 		System.out.println("sync");
-		FileMessage file = new FileMessage(fileCache);
+		FileMessage file = new FileMessage();
 		input[0] = "FILE";
-		file.perform(queue, input);
+		file.perform(queue, input, fileCache);
 	}
 
 }

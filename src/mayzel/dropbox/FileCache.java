@@ -13,10 +13,11 @@ import com.sun.org.apache.xml.internal.security.utils.Base64;
 
 public class FileCache {
 
-	private static final String ROOT = "dropbox/";
+	public String ROOT;
 
-	public FileCache() {
-		new File(ROOT).mkdir();
+	public FileCache(String path) {
+		ROOT = path;
+		new File(ROOT).mkdirs();
 	}
 
 	public List<File> getFiles() {
@@ -32,27 +33,27 @@ public class FileCache {
 		List<File> files = getFiles();
 		File file = null;
 		boolean found = false;
-		for (File f : files) {
-			if ((f.getName().equals(chunk.getFileName()))) {
-				found = true;
-				break;
-			}
+		// for (File f : files) {
+		// if ((f.getName().equals(chunk.getFileName()))) {
+		// found = true;
+		// break;
+		// }
+		// }
+		// if (!found) {
+		file = new File(chunk.getFileName());
+		byte[] data = chunk.decode();
+		RandomAccessFile rf;
+		try {
+			rf = new RandomAccessFile(file, "rw");
+			rf.seek(chunk.getOffset());
+			rf.write(data);
+			rf.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		if (!found) {
-			file = new File(chunk.getFileName());
-			byte[] data = chunk.decode();
-			RandomAccessFile rf;
-			try {
-				rf = new RandomAccessFile(file, "rw");
-				rf.seek(chunk.getOffset());
-				rf.write(data);
-				rf.close();
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
+		// }
 
 	}
 
@@ -79,5 +80,9 @@ public class FileCache {
 
 	public int getNumFiles() {
 		return getFiles().size();
+	}
+
+	public String getRoot() {
+		return ROOT;
 	}
 }

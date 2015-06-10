@@ -21,15 +21,15 @@ public class DropboxClient implements ReaderListener {
 		this.socket = new Socket("localhost", 8181);
 		this.outputStream = socket.getOutputStream();
 		this.printWriter = new PrintWriter(outputStream);
-		fileCache = new FileCache();
+		fileCache = new FileCache("ClientDropbox/");
 		queue = new LinkedBlockingQueue<String>();
 		messages = new ArrayList<Messages>();
-		messages.add(new ChunkMessage(fileCache));
-		messages.add(new SyncMessage(fileCache));
-		messages.add(new DownloadMessage(fileCache));
-		messages.add(new FileMessage(fileCache));
-		messages.add(new Files(fileCache));
-		messages.add(new ListMessage(fileCache));
+		messages.add(new ChunkMessage());
+		messages.add(new SyncMessage());
+		messages.add(new DownloadMessage());
+		messages.add(new FileMessage());
+		messages.add(new Files());
+		messages.add(new ListMessage());
 
 		ReaderThread rt = new ReaderThread(socket, this);
 		rt.start();
@@ -47,10 +47,11 @@ public class DropboxClient implements ReaderListener {
 		for (Messages msg : messages) {
 			if (msg.matches(inputs[0])) {
 				m = msg;
+				System.out.println(line);
 				break;
 			}
 		}
-		m.perform(queue, inputs);
+		m.perform(queue, inputs, fileCache);
 	}
 
 	@Override

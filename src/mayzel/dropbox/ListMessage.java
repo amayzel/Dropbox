@@ -4,21 +4,22 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class ListMessage extends Messages {
 
-	private FileCache fileCache;
-
-	public ListMessage(FileCache fileCache) {
-		this.fileCache = fileCache;
+	public ListMessage() {
 		line = "LIST";
 	}
 
 	@Override
-	public void perform(LinkedBlockingQueue<String> queue, String[] input) {
+	public void perform(LinkedBlockingQueue<String> queue, String[] input, FileCache fileCache) {
 		// return number of files
 		// lists all file names last modified and file size
+		String sendMessage = "FILES " + fileCache.getNumFiles();
+		queue.add(sendMessage);
+		for (int i = 0; i < fileCache.getNumFiles(); i++) {
+			java.io.File file = fileCache.getFiles().get(i);
+			String msg = "FILE " + file.getName() + " " + file.lastModified() + " " + file.length();
+			queue.add(msg);
+		}
 
-		Files files = new Files(fileCache);
-		input[0] = "FILES";
-		files.perform(queue, input);
 	}
 
 }
