@@ -16,8 +16,8 @@ public class DownloadMessage extends Messages {
 
 	@Override
 	void perform(LinkedBlockingQueue<String> queue, String[] input, FileCache fileCache) {
-		String filename = "./ServerDropbox/"  + input[1];
-		File file = new File(filename);
+		String filename = input[1];
+		File file = new File("./ServerDropbox/" + filename);
 
 		int offset = 0;
 		byte[] data = new byte[(int) file.length()];
@@ -25,7 +25,7 @@ public class DownloadMessage extends Messages {
 		try {
 			rf = new RandomAccessFile(file, "rw");
 			// get file length of file copying
-			while (offset < rf.length()) { //need to read chunk by chunk
+			while (offset < rf.length()) { // need to read chunk by chunk
 				rf.seek(offset);
 				rf.read(data);
 				String encoded = Base64.encode(data);
