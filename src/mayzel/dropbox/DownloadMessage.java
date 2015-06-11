@@ -25,14 +25,14 @@ public class DownloadMessage extends Messages {
 		try {
 			rf = new RandomAccessFile(file, "rw");
 			// get file length of file copying
-			while (offset < rf.length()) {
+			while (offset < rf.length()) { //need to read chunk by chunk
 				rf.seek(offset);
 				rf.read(data);
 				String encoded = Base64.encode(data);
 				Chunk chunk = new Chunk(filename, encoded, offset);
 				String msg = "CHUNK " + filename + " " + file.lastModified() + " " + file.length() + " " + offset + " "
 						+ encoded;
-				ChunkMessage chunkMsg = new ChunkMessage();
+				ClientChunkMessage chunkMsg = new ClientChunkMessage();
 				input = msg.split(" ");
 				queue.add(msg);
 				chunkMsg.perform(queue, input, fileCache);
